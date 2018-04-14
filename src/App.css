@@ -19,10 +19,36 @@
   box-sizing: border-box;
 }
 
+.App-submit {
+  width: 50%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box; 
+  background: #6495ED;
+  color: white;
+  cursor: pointer;
+}
+
 .App-expiry {  
   width: 50%;  
   display: flex;
   justify-content: space-between;
+}
+
+.App-cardsimage {
+  width: 40%;
+}
+
+.App-message {
+  width: 50%;
+  color: green;
+}
+
+.App-warning {
+  color: red;
+  width: 50%;
 }
 
 .App-input--expiry {

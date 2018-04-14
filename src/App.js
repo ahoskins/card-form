@@ -4,6 +4,10 @@ import './App.css';
 import cardValidate from 'card-validator';
 
 const METHODS_TO_BIND = ['onCardChange', 'onNameChange', 'onCVV2Change', 'onMonthBlur', 'onYearBlur', 'onMonthChange', 'onYearChange'];
+const EXPIRY_WARNING = "Expiry must be after current date";
+const MONTH_RANGE_WARNING = "Month must be number between 0 and 12"
+const VISA = "Visa";
+const AMEX = "American Express";
 
 class App extends Component {
   constructor() {
@@ -36,8 +40,10 @@ class App extends Component {
     let { year, expiryWarning, month } = this.state;
 
     const currentDate = this.getCurrentDate();    
-    if (year <= currentDate.year && month <= currentDate.month) {
-      expiryWarning = "Expiry be after current date";      
+    if ((year && year <= currentDate.year) && month <= currentDate.month) {
+      expiryWarning = EXPIRY_WARNING;      
+    } else {
+      expiryWarning = "";
     }
 
     this.setState({ expiryWarning });
@@ -48,9 +54,11 @@ class App extends Component {
 
     const currentDate = this.getCurrentDate();
     if (year < currentDate.year) {
-      expiryWarning = "Expiry be after current date";      
-    } else if (year === currentDate.year && month <= currentDate.month) {
-      expiryWarning = "Expiry be after current date";
+      expiryWarning = EXPIRY_WARNING;      
+    } else if (year === currentDate.year && (month && month <= currentDate.month)) {
+      expiryWarning = EXPIRY_WARNING;
+    } else {
+      expiryWarning = "";
     }
 
     this.setState({ expiryWarning });
@@ -64,7 +72,9 @@ class App extends Component {
     month = month.substring(0, 2);
 
     if (month > 12) {
-      monthWarning = "Must be between 0-12";
+      monthWarning = MONTH_RANGE_WARNING;
+    } else {
+      monthWarning = "";
     }
 
     this.setState({ month, monthWarning });
@@ -79,23 +89,23 @@ class App extends Component {
     this.setState({ year });
   }
 
-  onNameChange(event) {
+  onCVV2Change(event) {
     const { inferredCardType } = this.state;
-    let name = event.target.value;
+    let cvv2 = event.target.value;
 
-    if (inferredCardType === "visa") {
-      name = name.substring(0, 3);
-    } else if (inferredCardType === "american-express") {
-      name = name.substring(0, 4);      
+    if (inferredCardType === VISA) {
+      cvv2 = cvv2.substring(0, 3);
+    } else if (inferredCardType === AMEX) {
+      cvv2 = cvv2.substring(0, 4);      
     }
 
-    this.setState({ name });
+    this.setState({ cvv2 });
   }
 
-  onCVV2Change(event) {
-    const cvv2 = event.target.value;
+  onNameChange(event) {
+    const name = event.target.value;
 
-    this.setState({ cvv2 });
+    this.setState({ name });
   }
 
   onCardChange(event) {
@@ -106,8 +116,8 @@ class App extends Component {
 
     let validationInformation = cardValidate.number(card);
 
-    const type = validationInformation.card ? validationInformation.card.type : null;
-    if (type === "visa") {
+    const type = validationInformation.card ? validationInformation.card.niceType : null;
+    if (type === VISA) {
       // 4-4-4-4 grouping, 16 total
       card.substring(0, 16).split("").forEach((digit, index) => {
         if ([4, 8, 12].includes(index)) {
@@ -115,7 +125,7 @@ class App extends Component {
         }
         formattedCard += digit;
       });
-    } else if (type === "american-express") {
+    } else if (type === "American Express") {
       // 4-6-5 grouping, 15 total
       card.substring(0, 15).split("").forEach((digit, index) => {
         if ([4, 10].includes(index)) {
@@ -131,7 +141,7 @@ class App extends Component {
   }
 
   render() {
-    const { formattedCard, name, cvv2, month, year } = this.state;
+    const { formattedCard, name, cvv2, month, year, inferredCardType, monthWarning, expiryWarning} = this.state;
 
     return (
       <div className="App">
@@ -175,6 +185,14 @@ class App extends Component {
             value={year}                      
           />
         </div>
+        <img src="cards.png" className="App-cardsimage" />
+        <div className="App-message">{inferredCardType ? `Detected ${inferredCardType}`: ''}</div>
+        <div className="App-warning">{monthWarning ? `${monthWarning}.`: ''} {expiryWarning}</div>        
+        <button 
+          className="App-submit" 
+        >
+        Submit
+        </button>
       </div>
     );
   }
