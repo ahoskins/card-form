@@ -8,12 +8,12 @@ $ npm run start
 ```
 
 1. *How long did you spend working on the problem? How much time did you spend thinking about the
-design before writing your code?* Spend 2.5 hours on this. I mostly focused on validation. Before starting, I quickly
+design before writing your code?* I spent 2.5 hours on this. I mostly focused on validation. Before starting, I quickly
 investigated credit card validation libraries. I ended up deciding to use card-validator
-library from Braintree. In this solution, I'm not using much functionality from the library,
-but I decided that extensibility having a library would be important.
+library from [Braintree](https://github.com/braintree/card-validator). In this solution, I'm not using much functionality from the library,
+but I decided that for extensibility sake, it would be useful to use library (further error reporting requirements in the future).
 2. *What are the UI/UX usability features you implemented, or thought about implementing? How do they help validate the user input?* Three kinds of error validation I implemented. For the credit card - I format the 
-text with spaces, and truncate. For the CVV2, I constrain the length based on the credit card detected.
+text with spaces, and truncate to be either 15/16 characters. For the CVV2, I constrain the length based on the credit card detected.
 For the expiry, I display an error when the expiry is not after the current month/year. I also display warning
 to enter a month between 0 and 12. I also implemented, "confirmation validation". When the credit card type is detected, it will display the detected card type. This helps the user know they are on the right track.
 
